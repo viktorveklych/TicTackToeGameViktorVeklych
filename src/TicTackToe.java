@@ -10,11 +10,11 @@ public class TicTackToe {
         // create exit() +
         //create usersEnters(usersTurn) with checking +
         //create computersTurn() +
-       invitation();
-        int[] signs = new int [9];
-       int turnsCounter = 0;
+        invitation();
+        int[] signs = new int[9];
+        int turnsCounter = 0;
         boolean fortune = whoTurnsFirst();
-       while (true) {
+        while (true) {
             if (fortune) {
                 usersTurn(signs);
                 display(signs);
@@ -30,14 +30,14 @@ public class TicTackToe {
                 display(signs);
                 checkOfVictory(signs);
             }
-
-           turnsCounter++;
-           if (turnsCounter > 3) {
-               System.out.println("Sorry, DRAW!");
-               exit();
-           }
-       }
+            turnsCounter++;
+            if (turnsCounter > 3) {
+                System.out.println("Sorry, DRAW!");
+                exit();
+            }
+        }
     }
+
     public static void checkOfVictory(int[] array) {
         boolean justOneisNotNull = true;
         int notNull = 0;
@@ -67,7 +67,6 @@ public class TicTackToe {
                 System.out.println("Congratulations!!! You WIN!!!");
                 exit();
             }
-
             return;
         }
     }
@@ -113,7 +112,7 @@ public class TicTackToe {
             System.out.println("Make your turn, please:");
             usersEnter = new Scanner(System.in).nextInt();
             usersEnter = usersEnter - 1;
-            if (usersEnter<0 || usersEnter > 9) { // why can't I  cross this conditions ?
+            if (usersEnter < 0 || usersEnter > 9) { // why can't I  cross this conditions ?
                 System.out.println("Your number MUST be from 1 to 9! Try again");
             } else if (array[usersEnter] == 1 || array[usersEnter] == 2) {
                 System.out.println("This position is busy, choose other position");
