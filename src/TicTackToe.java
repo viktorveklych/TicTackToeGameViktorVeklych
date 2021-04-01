@@ -150,5 +150,3 @@ public class TicTackToe {
         System.exit(2);
     }
 }
-
-
