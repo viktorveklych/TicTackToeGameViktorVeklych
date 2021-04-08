@@ -1,77 +1,68 @@
-import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
 public class TicTackToeWithLogic {
+    private static final int X = 1;
+    private static final int O = 2;
+
     public static void main(String[] args) {
-        //create an invitation()+;
-        //create a  gamefield() +
-        //create block checkOfVictory() +
-        // create exit() +
-        //create usersEnters(usersTurn) with checking +
-        //create computersTurn() +
-        //create additional method isEmpty
-        invitation();
+
+        showInvitation();
         int[] signs = new int[9];
-        int turnsCounter = 0;
         while (true) {
             if (whoTurnsFirst()) {
                 usersTurn(signs);
-                display(signs);
-                checkOfVictory(signs);
+                displayGameField(signs);
+                if(checkOfVictory(signs, X)) {
+                    break;
+                }
+                if(checkForDraw(signs)) {
+                    break;
+                }
                 computersTurn(signs);
-                display(signs);
-                checkOfVictory(signs);
+                displayGameField(signs);
+                if(checkOfVictory(signs, O)) {
+                    break;
+                }
             } else {
                 computersTurn(signs);
-                display(signs);
-                checkOfVictory(signs);
+                displayGameField(signs);
+                if(checkOfVictory(signs, O)) {
+                    break;
+                }
+                if(checkForDraw(signs)) {
+                    break;
+                }
                 usersTurn(signs);
-                display(signs);
-                checkOfVictory(signs);
+                displayGameField(signs);
+                if(checkOfVictory(signs, X)) {
+                    break;
+                }
             }
-            turnsCounter++;
-            if (turnsCounter > 3) {
-                System.out.println("Sorry, DRAW!");
-                exit();
-            }
+            checkForDraw(signs);
         }
+        if (checkOfVictory(signs, O)) {
+            System.out.println("Computer WIN!!!");
+        } else if (checkOfVictory(signs, X)) {
+            System.out.println("Congratulations!!! You WIN!!!");
+        }
+        exit();
     }
 
-    public static void checkOfVictory(int[] array) {
-        boolean justOneisNotNull = true;
-        int notNull = 0;
-        for (int i = 0; i < array.length; i++) {
-            if (array[0] == 2 && array[1] == 2 && array[2] == 2 ||
-                    array[3] == 2 && array[4] == 2 && array[5] == 2 ||
-                    array[6] == 2 && array[7] == 2 && array[8] == 2 ||
+    public static boolean checkOfVictory(int[] array, int sign) {
+        return array[0] == sign && array[1] == sign && array[2] == sign ||
+                array[3] == sign && array[4] == sign && array[5] == sign ||
+                array[6] == sign && array[7] == sign && array[8] == sign ||
 
-                    array[0] == 2 && array[3] == 2 && array[6] == 2 ||
-                    array[1] == 2 && array[4] == 2 && array[7] == 2 ||
-                    array[2] == 2 && array[5] == 2 && array[8] == 2 ||
+                array[0] == sign && array[3] == sign && array[6] == sign ||
+                array[1] == sign && array[4] == sign && array[7] == sign ||
+                array[2] == sign && array[5] == sign && array[8] == sign ||
 
-                    array[6] == 2 && array[4] == 2 && array[2] == 2 ||
-                    array[0] == 2 && array[4] == 2 && array[8] == 2) {
-                System.out.println("Computer WIN!!!");
-                exit();
-            } else if ((array[0] == 1 && array[1] == 1 && array[2] == 1 ||
-                    array[3] == 1 && array[4] == 1 && array[5] == 1 ||
-                    array[6] == 1 && array[7] == 1 && array[8] == 1 ||
-
-                    array[0] == 1 && array[3] == 1 && array[6] == 1 ||
-                    array[1] == 1 && array[4] == 1 && array[7] == 1 ||
-                    array[2] == 1 && array[5] == 1 && array[8] == 1 ||
-
-                    array[6] == 1 && array[4] == 1 && array[2] == 1 ||
-                    array[0] == 1 && array[4] == 1 && array[8] == 1)) {
-                System.out.println("Congratulations!!! You WIN!!!");
-                exit();
-            }
-            return;
-        }
+                array[6] == sign && array[4] == sign && array[2] == sign ||
+                array[0] == sign && array[4] == sign && array[8] == sign;
     }
 
-    public static void invitation() {
+    public static void showInvitation() {
         System.out.println("Welcome to TicTackToe");
         System.out.println();
         System.out.println("You are going to play with sign \"X\".");
@@ -88,12 +79,12 @@ public class TicTackToeWithLogic {
         System.out.println("Put three X-es inline to win! GooD LucK!)");
     }
 
-    public static void display(int[] gamefield) {
+    public static void displayGameField(int[] gamefield) {
         char[] g = new char[9];
         for (int i = 0; i < gamefield.length; i++) {
-            if (gamefield[i] == 1) {
+            if (gamefield[i] == X) {
                 g[i] = 'X';
-            } else if (gamefield[i] == 2) {
+            } else if (gamefield[i] == O) {
                 g[i] = 'O';
             } else g[i] = ' ';
         }
@@ -106,105 +97,96 @@ public class TicTackToeWithLogic {
         System.out.println("___________________");
     }
 
-    public static int usersTurn(int[] array) {
-        int usersEnter;
+
+    public static void usersTurn(int[] array) {
         while (true) {
             System.out.println("Make your turn, please:");
-            usersEnter = new Scanner(System.in).nextInt();
+            int usersEnter = new Scanner(System.in).nextInt();
             usersEnter = usersEnter - 1;
-            if (usersEnter < 0 || usersEnter > 9) { // why can't I  cross this conditions ?
-                System.out.println("Your number MUST be from 1 to 9! Try again");
-            } else if (array[usersEnter] == 1 || array[usersEnter] == 2) {
+            if (array[usersEnter] == O || array[usersEnter] == X) {
                 System.out.println("This position is busy, choose other position");
+            } else if (usersEnter < 0 || usersEnter > 9) { // why can't I  cross this conditions ?
+                System.out.println("Your number MUST be from 1 to 9! Try again");
             } else {
-                break;
+                array[usersEnter] = X;
+                return;
             }
         }
-        return array[usersEnter] = 1;
     }
 
-    public static int computersTurn(int[] array) {
-        int computerEnter = 0;
-        boolean isNotEmpty = true;
-        while (isNotEmpty) {
 
-            if (array[0] == 1 && isEmpty(array,2)) {
-                computerEnter = 2;
-                break;
-            } else if (array[3] == 1 && isEmpty(array,5)) {
-                computerEnter = 5;
-                break;
-            } else if (array[6] == 1 && isEmpty(array,1)) {
-                computerEnter = 8;
-                break;
-            } else if (array[7] == 1 && isEmpty(array,1)) {
-                computerEnter = 1;
-                break;
-            } else if (array[8] == 1 && isEmpty(array,2)) {
-                computerEnter = 2;
-                break;
-                // attack turn
-            } else if (array[0] == 2 && array[2] == 2 && isEmpty(array,1)) {
-                computerEnter = 1;
-                break;
-            } else if (array[3] == 2 && array[5] == 2 && isEmpty(array,4)) {
-                computerEnter = 4;
-                break;
-            } else if (array[6] == 2 && array[8] == 2 && isEmpty(array,7)) {
-                computerEnter = 7;
-                break;
-            } else if (array[0] == 2 && array[6] == 2 && isEmpty(array,3)) {
-                computerEnter = 3;
-                break;
-            } else if (array[1] == 2 && array[7] == 2 && isEmpty(array,4)) {
-                computerEnter = 4;
-                break;
-            } else if (array[2] == 2 && array[8] == 2 && isEmpty(array,5)) {
-                computerEnter = 5;
-                break;
-            } else if (array[0] == 2 && array[8] == 2 && isEmpty(array,4)) {
-                computerEnter = 4;
-                break;
-            } else if (array[6] == 2 && array[2] == 2 && isEmpty(array,4)) {
-                computerEnter = 4;
-                break;
-            } else {
-                computerEnter = new Random().nextInt(8);
-                break;
+
+        public static void computersTurn (int[] array){
+            if (array[0] == O && array[2] == O && isEmpty(array, 1)) {
+                array[1] = O;
+                return;
+            } else if (array[3] == O && array[5] == O && isEmpty(array, 4)) {
+                array[4] = O;
+                return;
+            } else if (array[6] == O && array[8] == O && isEmpty(array, 7)) {
+                array[7] = O;
+                return;
+            } else if (array[0] == O && array[6] == O && isEmpty(array, 3)) {
+                array[3] = O;
+                return;
+            } else if (array[1] == O && array[7] == O && isEmpty(array, 4)) {
+                array[4] = O;
+                return;
+            } else if (array[2] == O && array[8] == O && isEmpty(array, 5)) {
+                array[5] = O;
+                return;
+            } else if (array[0] == O && array[8] == O && isEmpty(array, 4)) {
+                array[4] = O;
+                return;
+            } else if (array[6] == O && array[2] == O && isEmpty(array, 4)) {
+                array[4] = O;
+                return;
+            } else if (array[0] == X && isEmpty(array, 2)) {
+                array[2] = O;
+                return;
+            } else if (array[3] == X && isEmpty(array, 5)) {
+                array[5] = O;
+                return;
+            } else if (array[6] == X && isEmpty(array, 1)) {
+                array[8] = O;
+                return;
+            } else if (array[7] == X && isEmpty(array, 1)) {
+                array[1] = O;
+                return;
+            } else if (array[8] == X && isEmpty(array, 2)) {
+                array[2] = O;
+                return;
             }
-
+            while (true) {
+                int computerEnter = new Random().nextInt(8);
+                if (isEmpty(array, computerEnter)) {
+                    array[computerEnter] = O;
+                    return;
+                }
+            }
         }
-        if (array[computerEnter] == 1 || array[computerEnter] == 2) {
-            isNotEmpty = true;
-        }
-        return array[computerEnter] = 2;
-    }
 
-    public static boolean whoTurnsFirst() {
-        int fortune = new Random().nextInt(2);
-        if (fortune == 1) {
+        public static boolean whoTurnsFirst () {
+            return new Random().nextBoolean();
+        }
+
+        public static void exit () {
+            System.out.println("GAME OVER!");
+        }
+
+        public static boolean isEmpty ( int[] array, int position){
+            return array[position] == 0;
+        }
+
+        public static boolean checkForDraw ( int[] array){
+            for (int value : array) {
+                if (value == 0) {
+                    return false;
+                }
+            }
+            System.out.println("Sorry, DRAW!");
             return true;
         }
-        return false;
     }
-
-    public static void exit() {
-        System.out.println("GAME OVER!");
-        System.exit(2);
-    }
-
-    public static boolean isEmpty(int[] array, int position1) {
-        if (array[position1] != 0) {
-            return false;
-        }
-        return true;
-    }
-    public static boolean isEmpty(int[] array, int position1, int position2) {
-        if (array[position1] != 0 && array[position2] != 0) {
-            return false;
-        }
-        return true;
-    }
-}
 
 
